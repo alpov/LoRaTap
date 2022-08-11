@@ -203,9 +203,9 @@ int main(int argc, char *argv[])
             loratap_packet_header.channel.frequency = htonl((uint32_t)(freq * 1000000.));
             loratap_packet_header.channel.bandwidth = bw / 125;
             loratap_packet_header.channel.sf = sf;
-            loratap_packet_header.rssi.packet_rssi = 0;
+            loratap_packet_header.rssi.packet_rssi = 255;
             loratap_packet_header.rssi.current_rssi = (uint8_t)(rssi + 139.);
-            loratap_packet_header.rssi.max_rssi = 0;
+            loratap_packet_header.rssi.max_rssi = 255;
             loratap_packet_header.rssi.snr = (uint8_t)(lsnr * 4.);
             loratap_packet_header.sync_word = (chan == 8) ? 0xAA : 0x34; // LoRaWAN
             fwrite(&loratap_packet_header, sizeof(loratap_header_t), 1, captureFile);
@@ -222,7 +222,6 @@ int main(int argc, char *argv[])
                 loratap_extension_v1.crc_ok = (stat == 1) ? 1 : 0;
                 loratap_extension_v1.crc_bad = (stat == -1) ? 1 : 0;
                 loratap_extension_v1.no_crc = (stat == 0) ? 1 : 0;
-                loratap_extension_v1.flag_padding = 0;
                 fwrite(&loratap_extension_v1, sizeof(loratap_extension_v1_t), 1, captureFile);
             }
             

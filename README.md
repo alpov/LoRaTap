@@ -23,9 +23,9 @@ typedef struct  __attribute__((__packed__)) loratap_channel {
 } loratap_channel_t;
 
 typedef struct  __attribute__((__packed__)) loratap_rssi {
-	uint8_t				packet_rssi;	/* LoRa packet RSSI, if snr >= 0 then dBm value is -139 + packet_rssi, otherwise dBm value is -139 + packet_rssi * .25 */
-	uint8_t				max_rssi;	/* LoRa receiver max RSSI (dBm value is -139 + rssi) */
-	uint8_t				current_rssi;	/* LoRa receiver current RSSI (dBm value is -139 + rssi) */
+	uint8_t				packet_rssi;	/* LoRa packet RSSI, if snr >= 0 then dBm value is -139 + packet_rssi, otherwise dBm value is -139 + packet_rssi * .25; 255 for N/A */
+	uint8_t				max_rssi;	/* LoRa receiver max RSSI (dBm value is -139 + rssi), 255 for N/A */
+	uint8_t				current_rssi;	/* LoRa receiver current RSSI (dBm value is -139 + rssi), 255 for N/A */
 	uint8_t				snr;		/* LoRa SNR (dB value is (snr[two's complement])/4) */
 } loratap_rssi_t;
 
