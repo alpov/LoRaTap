@@ -179,15 +179,20 @@ int main(int argc, char *argv[])
             strptime(time, "%Y-%m-%dT%H:%M:%S", &tm);
             
             /* Write header */
-            pcaprec_hdr_t pcap_packet_header;
+            pcaprec_hdr_t pcap_packet_header = {0};
             pcap_packet_header.ts_sec = timegm(&tm);
             pcap_packet_header.ts_usec = atoi(&time[20]);
-            pcap_packet_header.incl_len = size + sizeof(loratap_header_t);
-            pcap_packet_header.orig_len = size + sizeof(loratap_header_t);
+            if (enable_extension_v1) {
+                pcap_packet_header.incl_len = size + sizeof(loratap_header_t) + sizeof(loratap_extension_v1_t);
+                pcap_packet_header.orig_len = size + sizeof(loratap_header_t) + sizeof(loratap_extension_v1_t);
+            } else {
+                pcap_packet_header.incl_len = size + sizeof(loratap_header_t);
+                pcap_packet_header.orig_len = size + sizeof(loratap_header_t);
+            }
             fwrite(&pcap_packet_header, sizeof(pcaprec_hdr_t), 1, captureFile);
             
             /* Write packet */
-            loratap_header_t loratap_packet_header;
+            loratap_header_t loratap_packet_header = {0};
             if (enable_extension_v1) {
                 loratap_packet_header.lt_version = 1;
                 loratap_packet_header.lt_length = htons(sizeof(loratap_header_t) + sizeof(loratap_extension_v1_t));
@@ -207,7 +212,7 @@ int main(int argc, char *argv[])
             
             if (enable_extension_v1) {
                 /* Extension header v1 */
-                loratap_extension_v1_t loratap_extension_v1;
+                loratap_extension_v1_t loratap_extension_v1 = {0};
                 loratap_extension_v1.timestamp = htonl((uint32_t)tmst);
                 loratap_extension_v1.channel = chan;
                 loratap_extension_v1.radio = rfch;
