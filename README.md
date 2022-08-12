@@ -16,6 +16,8 @@ Field details (Values are big-endian)
 ```
 typedef enum sf { SF7=7, SF8, SF9, SF10, SF11, SF12 } sf_t;
 
+typedef enum cr { CR_NONE=0, CR_4_5=5, CR_4_6=6, CR_4_7=7, CR_4_8=8 } cr_t;
+
 typedef struct  __attribute__((__packed__)) loratap_channel {
 	uint32_t			frequency;	/* LoRa frequency (Hz) */
 	uint8_t				bandwidth;	/* Channel bandwidth (KHz) in 125 KHz steps */
@@ -38,17 +40,17 @@ typedef struct  __attribute__((__packed__)) loratap_header {
 	uint8_t				sync_word;	/* LoRa radio sync word [0x34 = LoRaWAN] */
 } loratap_header_t;
 
-typedef struct __attribute__((__packed__)) loratap_extension_v1 {
-        uint64_t                        source_gw;      /* Source gateway ID */
-        uint32_t                        timestamp;      /* SX1301 tmst */
-        uint8_t                         channel;        /* SX1301 chan */
-        uint8_t                         radio;          /* SX1301 rfch */
-        uint8_t                         cr;             /* LoRa coding rate (cr_t) [0, 5, 6, 7, 8] */
-        uint8_t                         mod_fsk:1;      /* FSK (1) or LoRa (0) modulation */
-        uint8_t                         implicit_hdr:1; /* LoRa implicit header mode (Class-B beacon) */
-        uint8_t                         crc_ok:1;       /* Packet CRC valid */
-        uint8_t                         crc_bad:1;      /* Packet CRC invalid */
-        uint8_t                         no_crc:1;       /* Packet without CRC */
-        uint8_t                         flag_padding:3; /* Flag padding, reserved */
+typedef struct  __attribute__((__packed__)) loratap_extension_v1 {
+	uint64_t			source_gw;	/* Source gateway ID */
+	uint32_t			timestamp;	/* SX1301 tmst */
+	uint8_t				mod_fsk:1;	/* FSK (1) or LoRa (0) modulation */
+	uint8_t				implicit_hdr:1;	/* LoRa implicit header mode (Class-B beacon) */
+	uint8_t				crc_ok:1;	/* Packet CRC valid */
+	uint8_t				crc_bad:1;	/* Packet CRC invalid */
+	uint8_t				no_crc:1;	/* Packet without CRC */
+	uint8_t				padding:3;	/* Padding */
+	uint8_t				cr;		/* LoRa coding rate (cr_t) [0, 5, 6, 7, 8] */
+	uint8_t				channel;	/* SX1301 chan */
+	uint8_t				radio;		/* SX1301 rfch */
 } loratap_extension_v1_t;
 ```

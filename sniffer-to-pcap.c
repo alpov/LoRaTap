@@ -216,14 +216,14 @@ int main(int argc, char *argv[])
                 loratap_extension_v1_t loratap_extension_v1 = {0};
                 loratap_extension_v1.source_gw = bswap_64(strtoull(addr_txt, NULL, 0));
                 loratap_extension_v1.timestamp = htonl((uint32_t)tmst);
-                loratap_extension_v1.channel = chan;
-                loratap_extension_v1.radio = rfch;
-                loratap_extension_v1.cr = cr;
                 loratap_extension_v1.mod_fsk = (strcmp(modu, "FSK") == 0) ? 1 : 0;
                 loratap_extension_v1.implicit_hdr = (chan == 8 && stat == 0) ? 1 : 0; // Implicit header on channel 8 with CRC check disabled
                 loratap_extension_v1.crc_ok = (stat == 1) ? 1 : 0;
                 loratap_extension_v1.crc_bad = (stat == -1) ? 1 : 0;
                 loratap_extension_v1.no_crc = (stat == 0) ? 1 : 0;
+                loratap_extension_v1.cr = cr;
+                loratap_extension_v1.channel = chan;
+                loratap_extension_v1.radio = rfch;
                 fwrite(&loratap_extension_v1, sizeof(loratap_extension_v1_t), 1, captureFile);
             }
             
