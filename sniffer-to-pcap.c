@@ -6,6 +6,7 @@
 #include <math.h>
 #define __USE_XOPEN
 #include <time.h>
+#include <byteswap.h>
 #include <arpa/inet.h>
 #include <cjson/cJSON.h>
 #include "loratap.h"
@@ -213,6 +214,7 @@ int main(int argc, char *argv[])
             if (enable_extension_v1) {
                 /* Extension header v1 */
                 loratap_extension_v1_t loratap_extension_v1 = {0};
+                loratap_extension_v1.source_gw = bswap_64(strtoull(addr_txt, NULL, 0));
                 loratap_extension_v1.timestamp = htonl((uint32_t)tmst);
                 loratap_extension_v1.channel = chan;
                 loratap_extension_v1.radio = rfch;
