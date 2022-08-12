@@ -5,7 +5,7 @@ Encapsulation format to be used to store LoRa traffic in pcap files.
 	
 Field details (Values are big-endian)
 
-* `lt_version`, LoRaTap header version, current version is 0. Set to 1 if loratap_extension_v1_t is present.
+* `lt_version`, LoRaTap header version, current version is 0. Set to 1 if `loratap_extension_v1_t` is present.
 * `lt_padding`, Unused, for boundary alignment.
 * `lt_length`, LoRaTap header length, field used to allow expansion in future versions. Each version can append header parameters. So, whilst parsing, these parameters can be skipped if not defined for older versions by skipping to the offset of lt_length starting from the beginning of the header.
 * `channel`, Channel information
@@ -37,17 +37,37 @@ typedef struct  __attribute__((__packed__)) loratap_header {
 	loratap_rssi_t			rssi;
 	uint8_t				sync_word;	/* LoRa radio sync word [0x34 = LoRaWAN] */
 } loratap_header_t;
+```
 
-typedef struct __attribute__((__packed__)) loratap_extension_v1 {
-        uint32_t                        timestamp;      /* SX1301 tmst */
-        uint8_t                         channel;        /* SX1301 chan */
-        uint8_t                         radio;          /* SX1301 rfch */
-        uint8_t                         cr;             /* LoRa coding rate (cr_t) [0, 5, 6, 7, 8] */
-        uint8_t                         mod_fsk:1;      /* FSK (1) or LoRa (0) modulation */
-        uint8_t                         implicit_hdr:1; /* LoRa implicit header mode (Class-B beacon) */
-        uint8_t                         crc_ok:1;       /* Packet CRC valid */
-        uint8_t                         crc_bad:1;      /* Packet CRC invalid */
-        uint8_t                         no_crc:1;       /* Packet without CRC */
-        uint8_t                         flag_padding:3; /* Flag padding, reserved */
+Header extension for additional parameters. If present, set `lt_version` to 1 and add `sizeof(loratap_extension_v1_t)` to `lt_length` and pcap packet header.
+
+Field details (Values are big-endian)
+* `source_gw`, 64-bit address of packet source, e.g. ID of gateway that received the packet.
+* `timestamp`, 32-bit internal timestamp of SX1301.
+* `mod_fsk:1`, Modulation type, FSK (1) or LoRa (0).
+* `implicit_hdr:1`, LoRa implicit header mode (used e.g. for Class-B beacon).
+* `crc_ok:1`, Packet CRC valid.
+* `crc_bad:1`, Packet CRC invalid.
+* `no_crc:1`, Packet without CRC.
+* `padding:3`, Padding, not used.
+* `cr`, LoRa coding rate (`cr_t`) [0, 5, 6, 7, 8].
+* `channel`, SX1301 channel (chan) [0..9].
+* `radio`, SX1301 physical radio identification (rfch) [0, 1].
+
+```
+typedef enum cr { CR_NONE=0, CR_4_5=5, CR_4_6=6, CR_4_7=7, CR_4_8=8 } cr_t;
+
+typedef struct  __attribute__((__packed__)) loratap_extension_v1 {
+	uint64_t			source_gw;	/* Source gateway ID */
+	uint32_t			timestamp;	/* SX1301 tmst */
+	uint8_t				mod_fsk:1;	/* FSK (1) or LoRa (0) modulation */
+	uint8_t				implicit_hdr:1;	/* LoRa implicit header mode (Class-B beacon) */
+	uint8_t				crc_ok:1;	/* Packet CRC valid */
+	uint8_t				crc_bad:1;	/* Packet CRC invalid */
+	uint8_t				no_crc:1;	/* Packet without CRC */
+	uint8_t				padding:3;	/* Padding */
+	uint8_t				cr;		/* LoRa coding rate (cr_t) [0, 5, 6, 7, 8] */
+	uint8_t				channel;	/* SX1301 chan */
+	uint8_t				radio;		/* SX1301 rfch */
 } loratap_extension_v1_t;
 ```
