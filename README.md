@@ -39,6 +39,7 @@ typedef struct  __attribute__((__packed__)) loratap_header {
 } loratap_header_t;
 
 typedef struct __attribute__((__packed__)) loratap_extension_v1 {
+        uint64_t                        source_gw;      /* Source gateway ID */
         uint32_t                        timestamp;      /* SX1301 tmst */
         uint8_t                         channel;        /* SX1301 chan */
         uint8_t                         radio;          /* SX1301 rfch */
