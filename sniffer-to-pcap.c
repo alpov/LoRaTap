@@ -171,7 +171,10 @@ int main(int argc, char *argv[])
                 printf("b"); // Class-B beacon
             } else if (stat != 1) {
                 printf("X");
-                continue; // skip wrong or missing CRC
+                if (!enable_extension_v1) {
+                    // do not pass packets with wrong CRC if not marked in extension header
+                    continue; // skip wrong or missing CRC
+                }
             } else {
                 printf("."); // CRC OK
             }
@@ -208,7 +211,7 @@ int main(int argc, char *argv[])
             loratap_packet_header.rssi.current_rssi = (uint8_t)(rssi + 139.);
             loratap_packet_header.rssi.max_rssi = 255;
             loratap_packet_header.rssi.snr = (uint8_t)(lsnr * 4.);
-            loratap_packet_header.sync_word = (chan == 8) ? 0xAA : 0x34; // LoRaWAN
+            loratap_packet_header.sync_word = 0x34; // always LoRaWAN, was: (chan == 8) ? 0xAA : 0x34;
             fwrite(&loratap_packet_header, sizeof(loratap_header_t), 1, captureFile);
             
             if (enable_extension_v1) {
