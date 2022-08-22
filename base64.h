@@ -1,117 +1,67 @@
-/*
- * base64.h:	base64 encoding and decoding
- *
- * AUTHORS:	Joey Pabalinas <alyptik@protonmail.com>
- *
- * See LICENSE.md file for copyright and license details.
- */
-
-#ifndef _BASE64_H
-#define _BASE64_H 1
-
-#include <stdint.h>
-#include <string.h>
-
-/*
- * for base64 encoding
- *
- * (maps 0 => A, 1 => B, ...)
- */
-static char const base64_set[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-				 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-				 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-				 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-
-/*
- * for base64 decoding
- *
- * (maps A => 0, B => 1, ...)
- */
-static uint8_t const unbase64_set[] = {
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00, 0x3f, 0x34, 0x35,
-	0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3e, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04,
-	0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
-	0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-	0x19, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1a, 0x1b, 0x1c,
-	0x1d, 0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26,
-	0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30,
-	0x31, 0x32, 0x33, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+// https://opensource.apple.com/source/QuickTimeStreamingServer/QuickTimeStreamingServer-452/CommonUtilitiesLib/base64.c
+/* aaaack but it's fast and const should make it shared text page. */
+static const unsigned char pr2six[256] =
+{
+    /* ASCII table */
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 62, 64, 64, 64, 63,
+    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 64, 64, 64, 64, 64, 64,
+    64,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
+    15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 64, 64, 64, 64, 64,
+    64, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64
 };
 
-/*
- * encode three `uint8_t` octets to four base64 `chars`
- *
- * (unused octets must be '\0')
- */
-static inline char *base64(uint8_t const ra[static 3])
+static int Base64decode(char *bufplain, const char *bufcoded)
 {
-	/* add a null terminator */
-	static char ar[5];
+    int nbytesdecoded;
+    register const unsigned char *bufin;
+    register unsigned char *bufout;
+    register int nprbytes;
 
-	memset(ar, 0, sizeof ar);
-	ar[0] = base64_set[ra[0] >> 2];
-	ar[1] = base64_set[(uint8_t)(ra[0] << 4) | ra[1] >> 4];
-	ar[2] = ra[1] ? base64_set[(uint8_t)(ra[1] << 2) | ra[2] >> 6] : '=';
-	ar[3] = ra[2] ? base64_set[ra[2]] : '=';
+    bufin = (const unsigned char *) bufcoded;
+    while (pr2six[*(bufin++)] <= 63);
+    nprbytes = (bufin - (const unsigned char *) bufcoded) - 1;
+    nbytesdecoded = ((nprbytes + 3) / 4) * 3;
 
-	return ar;
+    bufout = (unsigned char *) bufplain;
+    bufin = (const unsigned char *) bufcoded;
+
+    while (nprbytes > 4) {
+    *(bufout++) =
+        (unsigned char) (pr2six[*bufin] << 2 | pr2six[bufin[1]] >> 4);
+    *(bufout++) =
+        (unsigned char) (pr2six[bufin[1]] << 4 | pr2six[bufin[2]] >> 2);
+    *(bufout++) =
+        (unsigned char) (pr2six[bufin[2]] << 6 | pr2six[bufin[3]]);
+    bufin += 4;
+    nprbytes -= 4;
+    }
+
+    /* Note: (nprbytes == 1) would be an error, so just ingore that case */
+    if (nprbytes > 1) {
+    *(bufout++) =
+        (unsigned char) (pr2six[*bufin] << 2 | pr2six[bufin[1]] >> 4);
+    }
+    if (nprbytes > 2) {
+    *(bufout++) =
+        (unsigned char) (pr2six[bufin[1]] << 4 | pr2six[bufin[2]] >> 2);
+    }
+    if (nprbytes > 3) {
+    *(bufout++) =
+        (unsigned char) (pr2six[bufin[2]] << 6 | pr2six[bufin[3]]);
+    }
+
+    *(bufout++) = '\0';
+    nbytesdecoded -= (4 - nprbytes) & 3;
+    return nbytesdecoded;
 }
-
-/*
- * decode four base64 `chars` to three `uint8_t` octets
- *
- * (unused octets will be set to '\0')
- */
-static inline uint8_t *unbase64(char const ar[static 4])
-{
-	/* add a null terminator */
-	static uint8_t ra[4];
-	size_t pad = 0;
-	/* safely use the the characters as indices */
-	uint8_t *safe = (uint8_t *)ar;
-	uint8_t str[] = {
-		unbase64_set[safe[0]], unbase64_set[safe[1]],
-		unbase64_set[safe[2]], unbase64_set[safe[3]]
-	};
-
-	/* figure out padding length */
-	memset(ra, 0, sizeof ra);
-	if (safe[3] == '=')
-		pad++;
-	if (safe[4] == '=')
-		pad++;
-
-	/* switch on padding character count */
-	switch (pad) {
-	case 0:
-		ra[2] = (str[2] << 6) | (str[3]);
-		/* fallthrough */
-	case 1:
-		ra[1] = (str[1] << 4) | (str[2] >> 2);
-		/* fallthrough */
-	default:
-		ra[0] = (str[0] << 2) | (str[1] >> 4);
-	}
-
-	return ra;
-}
-
-#endif

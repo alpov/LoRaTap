@@ -9,10 +9,13 @@
 #include <byteswap.h>
 #include <arpa/inet.h>
 #include <cjson/cJSON.h>
-#include "loratap.h"
+#include "loratap1.h"
 #include "base64.h"
 
 #define LINKTYPE_LORA_LORATAP 270
+
+#define LORATAP_V0_HEADER_LENGTH (15)
+#define LORATAP_V1_HEADER_LENGTH (sizeof(loratap_header_t))
 
 typedef struct pcap_hdr_s {
     uint32_t magic_number;   /* magic number */
@@ -31,73 +34,6 @@ typedef struct pcaprec_hdr_s {
     uint32_t orig_len;       /* actual length of packet */
 } pcaprec_hdr_t;
 
-// https://opensource.apple.com/source/QuickTimeStreamingServer/QuickTimeStreamingServer-452/CommonUtilitiesLib/base64.c
-/* aaaack but it's fast and const should make it shared text page. */
-static const unsigned char pr2six[256] =
-{
-    /* ASCII table */
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 62, 64, 64, 64, 63,
-    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 64, 64, 64, 64, 64, 64,
-    64,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 64, 64, 64, 64, 64,
-    64, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64
-};
-
-int Base64decode(char *bufplain, const char *bufcoded)
-{
-    int nbytesdecoded;
-    register const unsigned char *bufin;
-    register unsigned char *bufout;
-    register int nprbytes;
-
-    bufin = (const unsigned char *) bufcoded;
-    while (pr2six[*(bufin++)] <= 63);
-    nprbytes = (bufin - (const unsigned char *) bufcoded) - 1;
-    nbytesdecoded = ((nprbytes + 3) / 4) * 3;
-
-    bufout = (unsigned char *) bufplain;
-    bufin = (const unsigned char *) bufcoded;
-
-    while (nprbytes > 4) {
-    *(bufout++) =
-        (unsigned char) (pr2six[*bufin] << 2 | pr2six[bufin[1]] >> 4);
-    *(bufout++) =
-        (unsigned char) (pr2six[bufin[1]] << 4 | pr2six[bufin[2]] >> 2);
-    *(bufout++) =
-        (unsigned char) (pr2six[bufin[2]] << 6 | pr2six[bufin[3]]);
-    bufin += 4;
-    nprbytes -= 4;
-    }
-
-    /* Note: (nprbytes == 1) would be an error, so just ingore that case */
-    if (nprbytes > 1) {
-    *(bufout++) =
-        (unsigned char) (pr2six[*bufin] << 2 | pr2six[bufin[1]] >> 4);
-    }
-    if (nprbytes > 2) {
-    *(bufout++) =
-        (unsigned char) (pr2six[bufin[1]] << 4 | pr2six[bufin[2]] >> 2);
-    }
-    if (nprbytes > 3) {
-    *(bufout++) =
-        (unsigned char) (pr2six[bufin[2]] << 6 | pr2six[bufin[3]]);
-    }
-
-    *(bufout++) = '\0';
-    nbytesdecoded -= (4 - nprbytes) & 3;
-    return nbytesdecoded;
-}
 
 int main(int argc, char *argv[])
 {
@@ -106,7 +42,7 @@ int main(int argc, char *argv[])
     FILE *inputFile;
     char *line = NULL;
     size_t len = 0;
-    bool enable_extension_v1 = false;
+    bool enable_v1 = false;
     
     if (argc != 4) {
         printf("Usage: %s {v0|v1} input_file output_file\n", argv[0]);
@@ -114,7 +50,7 @@ int main(int argc, char *argv[])
     }
     
     if (strcmp(argv[1], "v1") == 0) {
-        enable_extension_v1 = true;
+        enable_v1 = true;
     }
     
     inputFile = fopen(argv[2], "r");
@@ -168,12 +104,14 @@ int main(int argc, char *argv[])
             }
             
             if (chan == 8 /*stat == 0 && freq == 869.525 && sf == 9 && bw == 125*/) {
-                printf("b"); // Class-B beacon
+                printf("b");
+                if (!enable_v1) {
+                    continue; // do not pass Class-B beacons
+                }
             } else if (stat != 1) {
                 printf("X");
-                if (!enable_extension_v1) {
-                    // do not pass packets with wrong CRC if not marked in extension header
-                    continue; // skip wrong or missing CRC
+                if (!enable_v1) {
+                    continue; // do not pass packets with wrong CRC
                 }
             } else {
                 printf("."); // CRC OK
@@ -186,24 +124,14 @@ int main(int argc, char *argv[])
             pcaprec_hdr_t pcap_packet_header = {0};
             pcap_packet_header.ts_sec = timegm(&tm);
             pcap_packet_header.ts_usec = atoi(&time[20]);
-            if (enable_extension_v1) {
-                pcap_packet_header.incl_len = size + sizeof(loratap_header_t) + sizeof(loratap_extension_v1_t);
-                pcap_packet_header.orig_len = size + sizeof(loratap_header_t) + sizeof(loratap_extension_v1_t);
-            } else {
-                pcap_packet_header.incl_len = size + sizeof(loratap_header_t);
-                pcap_packet_header.orig_len = size + sizeof(loratap_header_t);
-            }
+            pcap_packet_header.incl_len = size + (enable_v1 ? LORATAP_V1_HEADER_LENGTH : LORATAP_V0_HEADER_LENGTH);
+            pcap_packet_header.orig_len = size + (enable_v1 ? LORATAP_V1_HEADER_LENGTH : LORATAP_V0_HEADER_LENGTH);
             fwrite(&pcap_packet_header, sizeof(pcaprec_hdr_t), 1, captureFile);
             
             /* Write packet */
             loratap_header_t loratap_packet_header = {0};
-            if (enable_extension_v1) {
-                loratap_packet_header.lt_version = 1;
-                loratap_packet_header.lt_length = htons(sizeof(loratap_header_t) + sizeof(loratap_extension_v1_t));
-            } else {
-                loratap_packet_header.lt_version = 0;
-                loratap_packet_header.lt_length = htons(sizeof(loratap_header_t));
-            }
+            loratap_packet_header.lt_version = enable_v1 ? 1 : 0;
+            loratap_packet_header.lt_length = enable_v1 ? htons(LORATAP_V1_HEADER_LENGTH) : htons(LORATAP_V0_HEADER_LENGTH);
             loratap_packet_header.channel.frequency = htonl((uint32_t)(freq * 1000000.));
             loratap_packet_header.channel.bandwidth = bw / 125;
             loratap_packet_header.channel.sf = sf;
@@ -212,23 +140,18 @@ int main(int argc, char *argv[])
             loratap_packet_header.rssi.max_rssi = 255;
             loratap_packet_header.rssi.snr = (uint8_t)(lsnr * 4.);
             loratap_packet_header.sync_word = 0x34; // always LoRaWAN, was: (chan == 8) ? 0xAA : 0x34;
-            fwrite(&loratap_packet_header, sizeof(loratap_header_t), 1, captureFile);
-            
-            if (enable_extension_v1) {
-                /* Extension header v1 */
-                loratap_extension_v1_t loratap_extension_v1 = {0};
-                loratap_extension_v1.source_gw = bswap_64(strtoull(addr_txt, NULL, 0));
-                loratap_extension_v1.timestamp = htonl((uint32_t)tmst); // valueint clips to int32_t, have to use double
-                loratap_extension_v1.mod_fsk = (strcmp(modu, "FSK") == 0) ? 1 : 0;
-                loratap_extension_v1.implicit_hdr = (chan == 8 && stat == 0) ? 1 : 0; // Implicit header on channel 8 with CRC check disabled
-                loratap_extension_v1.crc_ok = (stat == 1) ? 1 : 0;
-                loratap_extension_v1.crc_bad = (stat == -1) ? 1 : 0;
-                loratap_extension_v1.no_crc = (stat == 0) ? 1 : 0;
-                loratap_extension_v1.cr = cr;
-                loratap_extension_v1.channel = chan;
-                loratap_extension_v1.radio = rfch;
-                fwrite(&loratap_extension_v1, sizeof(loratap_extension_v1_t), 1, captureFile);
-            }
+            loratap_packet_header.source_gw = bswap_64(strtoull(addr_txt, NULL, 0));
+            loratap_packet_header.timestamp = htonl((uint32_t)tmst); // valueint clips to int32_t, have to use double
+            loratap_packet_header.flags.mod_fsk = (strcmp(modu, "FSK") == 0) ? 1 : 0;
+            loratap_packet_header.flags.implicit_hdr = (chan == 8 && stat == 0) ? 1 : 0; // Implicit header on channel 8 with CRC check disabled
+            loratap_packet_header.flags.crc_ok = (stat == 1) ? 1 : 0;
+            loratap_packet_header.flags.crc_bad = (stat == -1) ? 1 : 0;
+            loratap_packet_header.flags.no_crc = (stat == 0) ? 1 : 0;
+            loratap_packet_header.cr = cr;
+            loratap_packet_header.datarate = htons(atoi(datr));
+            loratap_packet_header.if_channel = chan;
+            loratap_packet_header.rf_chain = rfch;
+            fwrite(&loratap_packet_header, enable_v1 ? LORATAP_V1_HEADER_LENGTH : LORATAP_V0_HEADER_LENGTH, 1, captureFile);
             
             /* Write payload */
             char data_raw[2048];
