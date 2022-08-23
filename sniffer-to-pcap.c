@@ -151,6 +151,7 @@ int main(int argc, char *argv[])
             loratap_packet_header.datarate = htons(atoi(datr));
             loratap_packet_header.if_channel = chan;
             loratap_packet_header.rf_chain = rfch;
+            loratap_packet_header.tag = 0; // reserved
             fwrite(&loratap_packet_header, enable_v1 ? LORATAP_V1_HEADER_LENGTH : LORATAP_V0_HEADER_LENGTH, 1, captureFile);
             
             /* Write payload */
