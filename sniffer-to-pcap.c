@@ -103,16 +103,18 @@ int main(int argc, char *argv[])
                 sscanf(codr, "4/%d", &cr);
             }
             
-            if (chan == 8 /*stat == 0 && freq == 869.525 && sf == 9 && bw == 125*/) {
-                printf("b");
+            if (chan == 8 && stat == 0) {
+                printf("b"); // Implicit
                 if (!enable_v1) {
                     continue; // do not pass Class-B beacons
                 }
-            } else if (stat != 1) {
-                printf("X");
+            } else if (stat == -1) {
+                printf("X"); // CRC Bad
                 if (!enable_v1) {
                     continue; // do not pass packets with wrong CRC
                 }
+            } else if (stat == 0) {
+                printf("-"); // No CRC
             } else {
                 printf("."); // CRC OK
             }
