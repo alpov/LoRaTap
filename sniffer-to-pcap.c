@@ -69,6 +69,7 @@ int main(int argc, char *argv[])
     while (getline(&line, &len, inputFile) != -1) {
         if (strlen(line) < 20) continue;
         char *addr_txt = line; addr_txt[18] = '\0';
+        int gwid = atoi(addr_txt + 16);
         char *json_txt = line + 20;
         //printf("addr: '%s', json: '%s'\n", addr_txt, json_txt);
 
@@ -103,7 +104,7 @@ int main(int argc, char *argv[])
                 sscanf(codr, "4/%d", &cr);
             }
             
-            if (chan == 8 && stat == 0) {
+            if (gwid == 3 && chan == 8 && stat == 0) {
                 printf("b"); // Implicit
                 if (!enable_v1) {
                     continue; // do not pass Class-B beacons
@@ -145,7 +146,8 @@ int main(int argc, char *argv[])
             loratap_packet_header.source_gw = bswap_64(strtoull(addr_txt, NULL, 0));
             loratap_packet_header.timestamp = htonl((uint32_t)tmst); // valueint clips to int32_t, have to use double
             loratap_packet_header.flags.mod_fsk = (strcmp(modu, "FSK") == 0) ? 1 : 0;
-            loratap_packet_header.flags.implicit_hdr = (chan == 8 && stat == 0) ? 1 : 0; // Implicit header on channel 8 with CRC check disabled
+            loratap_packet_header.flags.iq_inverted = (gwid == 2 || (gwid == 3 && chan != 8)) ? 1 : 0; // Downlink is inverted, uplink and beacon non-inverted
+            loratap_packet_header.flags.implicit_hdr = (gwid == 3 && chan == 8 && stat == 0) ? 1 : 0; // Implicit header on channel 8 with CRC check disabled
             loratap_packet_header.flags.crc_ok = (stat == 1) ? 1 : 0;
             loratap_packet_header.flags.crc_bad = (stat == -1) ? 1 : 0;
             loratap_packet_header.flags.no_crc = (stat == 0) ? 1 : 0;

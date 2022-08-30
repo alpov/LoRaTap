@@ -58,11 +58,12 @@ typedef struct __attribute__((__packed__)) loratap_rssi {
 
 typedef struct __attribute__((__packed__)) loratap_flags {
 	uint8_t				mod_fsk:1;	/* FSK (1) or LoRa (0) modulation */
+	uint8_t				iq_inverted:1;	/* LoRa chirp polarization (uplink non-inverted, downlink inverted) */
 	uint8_t				implicit_hdr:1;	/* LoRa implicit header mode (Class-B beacon) */
 	uint8_t				crc_ok:1;	/* Packet CRC valid */
 	uint8_t				crc_bad:1;	/* Packet CRC invalid */
 	uint8_t				no_crc:1;	/* Packet without CRC */
-	uint8_t				padding:3;	/* Padding (RFU) */
+	uint8_t				padding:2;	/* Padding (RFU) */
 } loratap_flags_t;
 
 typedef struct __attribute__((__packed__)) loratap_header {
