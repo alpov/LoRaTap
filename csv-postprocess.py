@@ -18,8 +18,12 @@ for line in csv.reader(fi):
     line[5] = -139 + float(line[5])
 
     snr = int(line[6])
-    if snr > 127: snr = snr - 256
+    if snr > 127:
+        snr = snr - 256
     line[6] = snr / 4
+
+    if line[10] == '' and line[2] == 17 and line[3] == '3' and line[4] == 4:
+        line[10] = 65520
 
     #print(line)
     writer.writerow(line)

@@ -15,6 +15,8 @@ FLT_BEACON_ALL="lorawan.msgtype == \"Class-B Beacon\""
 FLT_BEACON_VALID="(lorawan.msgtype == \"Class-B Beacon\") && (lorawan.beacon.crc1.status == \"Good\") && 
     (lorawan.beacon.crc2.status == \"Good\")"
 
+FLT_ALL_VALID="($FLT_LORAWAN_VALID) or ($FLT_BEACON_VALID)"
+
 mkdir $WORKDIR/csv
 rm -f $WORKDIR/csv/*.csv
 
@@ -25,13 +27,17 @@ for f in $WORKDIR/pcap/*.pcap; do
   ./csv-postprocess.py data.csv $WORKDIR/csv/${DATASET}_all.csv
   printf "%s,TOTAL,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_all.csv`
 
-  tshark -r "$f" $CSV_FORMAT -Y "$FLT_LORAWAN_VALID" > data.csv
-  ./csv-postprocess.py data.csv $WORKDIR/csv/${DATASET}_lorawan.csv
-  printf "%s,LORAWAN,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_lorawan.csv`
+  tshark -r "$f" $CSV_FORMAT -Y "$FLT_ALL_VALID" > data.csv
+  ./csv-postprocess.py data.csv $WORKDIR/csv/${DATASET}_valid.csv
+  printf "%s,VALID,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_valid.csv`
 
-  tshark -r "$f" $CSV_FORMAT -Y "$FLT_BEACON_VALID" > data.csv
-  ./csv-postprocess.py data.csv $WORKDIR/csv/${DATASET}_beacon.csv
-  printf "%s,BEACON,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_beacon.csv`
+#  tshark -r "$f" $CSV_FORMAT -Y "$FLT_LORAWAN_VALID" > data.csv
+#  ./csv-postprocess.py data.csv $WORKDIR/csv/${DATASET}_lorawan.csv
+#  printf "%s,LORAWAN,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_lorawan.csv`
+
+#  tshark -r "$f" $CSV_FORMAT -Y "$FLT_BEACON_VALID" > data.csv
+#  ./csv-postprocess.py data.csv $WORKDIR/csv/${DATASET}_beacon.csv
+#  printf "%s,BEACON,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_beacon.csv`
 done
 
 rm -f data.csv
