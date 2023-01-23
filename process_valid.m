@@ -3,8 +3,9 @@
 
 close all;
 clear all;
+name = '05_Wien_valid';
 
-M = readmatrix('01_Brno_valid.csv', 'TreatAsMissing', 'NaN');
+M = readmatrix(strcat(name, '.csv'), 'TreatAsMissing', 'NaN');
 
 %% Histogram of spreading factor usage of all packets
 figure();
@@ -18,6 +19,9 @@ set(gca, 'xticklabel', {'SF7', 'SF8', 'SF9', 'SF10', 'SF11', 'SF12'});
 xlabel('Spreading factor'); ylabel('Packet count'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
+title(name,'Interpreter','none');
+set(findall(gcf,'-property','FontSize'),'FontSize',8)
+print(strcat(name, '_01'), '-dpng');
 
 %% Histogram of coding ratio
 figure();
@@ -32,6 +36,9 @@ set(gca, 'xticklabel', {'4/5', '4/6', '4/7', '4/8'});
 xlabel('Coding ratio'); ylabel('Packet count'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
+title(name,'Interpreter','none');
+set(findall(gcf,'-property','FontSize'),'FontSize',8)
+print(strcat(name, '_02'), '-dpng');
 
 %% Histogram of frequency channels usage of all packets
 figure();
@@ -45,6 +52,9 @@ set(gca, 'xticklabel', {'867.1', '867.3', '867.5', '867.7', '867.9', '868.1', '8
 xlabel('Frequency [MHz]'); ylabel('Packet count'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
+title(name,'Interpreter','none');
+set(findall(gcf,'-property','FontSize'),'FontSize',8)
+print(strcat(name, '_03'), '-dpng');
 
 %% Histogram of RSSI
 figure();
@@ -55,6 +65,9 @@ c3 = histcounts(M(M(:,4)==3,col), edges);
 bar(-130:2:-50,[c1' c2' c3'], 'Stacked', 'BarWidth', 1);
 xlabel('RSSI [dBm]'); ylabel('Packet count'); grid on;
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
+title(name,'Interpreter','none');
+set(findall(gcf,'-property','FontSize'),'FontSize',8)
+print(strcat(name, '_04'), '-dpng');
 
 %% Histogram of SNR
 figure();
@@ -65,6 +78,9 @@ c3 = histcounts(M(M(:,4)==3,col), edges);
 bar(-25:1:15, [c1' c2' c3'], 'Stacked', 'BarWidth', 1);
 xlabel('SNR [dBm]'); ylabel('Packet count'); grid on;
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
+title(name,'Interpreter','none');
+set(findall(gcf,'-property','FontSize'),'FontSize',8)
+print(strcat(name, '_05'), '-dpng');
 
 %% Histogram of packet length
 figure();
@@ -79,6 +95,9 @@ set(gca, 'xticklabel', {'<12', '12-15', '16-19', '20-23', '24-27', '28-31', '31-
 xlabel('Data length [B]'); ylabel('Packet count'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
+title(name,'Interpreter','none');
+set(findall(gcf,'-property','FontSize'),'FontSize',8)
+print(strcat(name, '_06'), '-dpng');
 
 %% Histogram of message types in LoRaWAN
 figure();
@@ -94,4 +113,7 @@ xtickangle(45);
 xlabel('Message Type'); ylabel('Packet count'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
+title(name,'Interpreter','none');
+set(findall(gcf,'-property','FontSize'),'FontSize',8)
+print(strcat(name, '_07'), '-dpng');
 
