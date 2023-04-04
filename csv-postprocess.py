@@ -25,5 +25,10 @@ for line in csv.reader(fi):
     if line[10] == '' and line[2] == 17 and line[3] == '3' and line[4] == 4:
         line[10] = 65520
 
+    if line[11] == '':
+        line[11] = 0
+    else:
+        line[11] = int(line[11], 0)
+
     #print(line)
     writer.writerow(line)

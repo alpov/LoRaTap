@@ -44,7 +44,7 @@ for f in $WORKDIR/pcap/*.pcap; do
   tshark -r "$f" $CSV_FORMAT -Y "$FLT_LORAWAN_VALID_DATA" > data.csv
   ./csv-postprocess.py data.csv $WORKDIR/csv/${DATASET}_data.csv
   printf "%s,DATA,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_data.csv`
-
+  ./csv-devaddr.py $WORKDIR/csv/${DATASET}_data.csv $WORKDIR/csv/${DATASET}_devaddr.csv
 done
 
 rm -f data.csv
