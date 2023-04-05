@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" creator="Python GPX Library - https://github.com/tkrajina/gpxpy" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<wpt lat="50.66445N" lon="5.59276E">
+    <name>Liege (Belgium)</name>
+    <ele>151</ele>
+    <desc>25.8.2022 - 12.9.2022</desc>
+</wpt>
+<wpt lat="47.07049N" lon="15.44506E">
+    <name>Graz (Austria)</name>
+    <ele>364</ele>
+    <desc>26.10.2022 - 29.11.2022</desc>
+</wpt>
+<wpt lat="48.19666N" lon="16.37101E">
+    <name>Wien (Austria)</name>
+    <ele>204</ele>
+    <desc>1.12.2022 - 4.1.2023</desc>
+</wpt>
+<wpt lat="49.22685N" lon="16.57536E">
+    <name>Brno (Czechia)</name>
+    <ele>306</ele>
+    <desc>16.2.2023 - 30.3.2023</desc>
+</wpt>
+<rte>
+  <name>Liege to Gateway</name>
+  <rtept lat="50.66445N" lon="5.59276E"></rtept>
+  <rtept lat="50.81920N" lon="2.91565E"></rtept>
+</rte>
+<rte>
+  <name>Liege to Gateway</name>
+  <rtept lat="50.66445N" lon="5.59276E"></rtept>
+  <rtept lat="50.81561N" lon="2.85798E"></rtept>
+</rte>
+<rte>
+  <name>Liege to Gateway</name>
+  <rtept lat="50.66445N" lon="5.59276E"></rtept>
+  <rtept lat="50.77440N" lon="2.94350E"></rtept>
+</rte>
+<rte>
+  <name>Liege to Gateway</name>
+  <rtept lat="50.66445N" lon="5.59276E"></rtept>
+  <rtept lat="50.83745N" lon="2.87969E"></rtept>
+</rte>
+<rte>
+  <name>Liege to Gateway</name>
+  <rtept lat="50.66445N" lon="5.59276E"></rtept>
+  <rtept lat="50.77114N" lon="2.89865E"></rtept>
+</rte>
+<rte>
+  <name>Liege to Gateway</name>
+  <rtept lat="50.66445N" lon="5.59276E"></rtept>
+  <rtept lat="50.77012N" lon="2.85868E"></rtept>
+</rte>
+<rte>
+  <name>Liege to Gateway</name>
+  <rtept lat="50.66445N" lon="5.59276E"></rtept>
+  <rtept lat="50.84916N" lon="3.00802E"></rtept>
+</rte>
+<rte>
+  <name>Wien to Gateway</name>
+  <rtept lat="48.19666N" lon="16.37101E"></rtept>
+  <rtept lat="48.22966N" lon="8.22838E"></rtept>
+</rte>
+<rte>
+  <name>Wien to Gateway</name>
+  <rtept lat="48.19666N" lon="16.37101E"></rtept>
+  <rtept lat="48.21081N" lon="8.17917E"></rtept>
+</rte>
+</gpx>
