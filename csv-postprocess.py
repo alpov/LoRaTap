@@ -30,5 +30,13 @@ for line in csv.reader(fi):
     else:
         line[11] = int(line[11], 0)
 
+    if line[12] == '':
+        line[12] = -1
+    else:
+        line[12] = int(line[12], 0)
+
+    if line[13] == '':
+        line[13] = -1
+
     #print(line)
     writer.writerow(line)

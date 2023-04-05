@@ -5,10 +5,10 @@ WORKDIR=".."
 CSV_FORMAT="-T fields -E separator=,
     -e frame.number -e frame.time_epoch -e frame.len -e loratap.srcgw -e loratap.flags.crc
     -e loratap.rssi.current -e loratap.rssi.snr -e loratap.channel.frequency -e loratap.channel.sf -e loratap.channel.cr
-    -e lorawan.mhdr.ftype -e lorawan.fhdr.devaddr"
+    -e lorawan.mhdr.ftype -e lorawan.fhdr.devaddr -e lorawan.fport -e lorawan.fhdr.fcnt"
 
 FLT_LORAWAN_VALID="(((loratap.flags.crc == 0x01) || ((loratap.flags.crc == 0x04) && ((lorawan.mhdr.ftype == 3) ||
-    lorawan.mhdr.ftype == 5))) && !(lorawan.mhdr_error))"
+    lorawan.mhdr.ftype == 5))) && !(lorawan.mhdr_error) && !(_ws.expert.group == \"Malformed\"))"
 
 FLT_LORAWAN_VALID_DATA="($FLT_LORAWAN_VALID) && (lorawan.mhdr.ftype == 2 || lorawan.mhdr.ftype == 3 || lorawan.mhdr.ftype == 4 || lorawan.mhdr.ftype == 5)"
 
