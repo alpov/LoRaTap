@@ -1,7 +1,7 @@
 function  process_all(name)
 
-% nr,time_epoch,len,srcgw,crc,rssi,snr,frequency,sf,cr,ftype
-% 1,1659362668.811991000,27,1,1,-108.0,0.0,867100000,11,5,2
+% nr,time_epoch,len,srcgw,crc,rssi,snr,frequency,sf,cr,ftype,devaddr,fport,fcnt
+% 1,1659362668.811991000,27,1,1,-108.0,0.0,867100000,11,5,2,654426274,8,36916
 
 %close all;
 %clear all;

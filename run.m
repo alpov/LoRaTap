@@ -1,5 +1,5 @@
 
-%close all; process_all('../loralog/csv/07_Brno_all');
+close all; process_valid('../loralog/csv/05_Wien_valid');
 
 %%
 tic

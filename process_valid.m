@@ -1,8 +1,8 @@
 function  process_valid(name)
 
 
-% nr,time_epoch,len,srcgw,crc,rssi,snr,frequency,sf,cr,ftype
-% 1,1659362668.811991000,27,1,1,-108.0,0.0,867100000,11,5,2
+% nr,time_epoch,len,srcgw,crc,rssi,snr,frequency,sf,cr,ftype,devaddr,fport,fcnt
+% 1,1659362668.811991000,27,1,1,-108.0,0.0,867100000,11,5,2,654426274,8,36916
 
 %close all;
 %clear all;
@@ -129,4 +129,17 @@ legend('Uplink', 'Downlink RX1', 'Downlink RX2');
 title(name4title,'Interpreter','none');
 set(findall(gcf,'-property','FontSize'),'FontSize',8)
 print(strcat(name, '_07'), '-dpng');
+
+%% Histogram of FPort
+% figure();
+% edges = 0:1:255; col = 13;
+% c1 = round(histcounts(M(M(:,4)==1,col), edges) ./ numdays);
+% c2 = round(histcounts(M(M(:,4)==2,col), edges) ./ numdays);
+% c3 = round(histcounts(M(M(:,4)==3,col), edges) ./ numdays);
+% bar([c1' c2' c3'], 'Stacked', 'BarWidth', 1);
+% xlabel('FPort'); ylabel('Packet count per day'); grid on;
+% legend('Uplink', 'Downlink RX1', 'Downlink RX2');
+% title(name4title,'Interpreter','none');
+% set(findall(gcf,'-property','FontSize'),'FontSize',8)
+% print(strcat(name, '_08'), '-dpng');
 
