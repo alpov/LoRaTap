@@ -1,0 +1,49 @@
+%function  process_valid(name)
+
+
+% nr,time_epoch,len,srcgw,crc,rssi,snr,frequency,sf,cr,ftype,devaddr,fport,fcnt
+% 1,1659362668.811991000,27,1,1,-108.0,0.0,867100000,11,5,2,654426274,8,36916
+
+close all;
+clear all;
+
+%name = '05_Wien_beacon'; invalidstr = 'UTC shift'; append = '_utcshift';
+name = '07_Brno_beacon'; invalidstr = 'UNIX time'; append = '_unix';
+
+M = readmatrix(strcat(name, '_valid.csv'), 'TreatAsMissing', 'NaN');
+N = readmatrix(strcat(name, append, '.csv'), 'TreatAsMissing', 'NaN');
+numdays = days(datetime(M(end,2), 'ConvertFrom', 'posixtime')-datetime(M(1,2), 'ConvertFrom', 'posixtime'));
+
+% Extract city and type from filename
+[~, filename, ~] = fileparts(name);
+[city, type] = strtok(filename(4:end), '_');
+type = type(2:end);
+
+% Replace underscores with spaces and format output string
+type = strrep(type, '_', ' ');
+name4title = sprintf('%s (%s)', city, type);
+
+%% Histogram of RSSI
+figure();
+edges = -121:2:-59; col = 6;
+c1 = round(histcounts(M(:,col), edges) ./ numdays);
+c2 = round(histcounts(N(:,col), edges) ./ numdays);
+bar(-120:2:-60,[c1' c2'], 'Stacked', 'BarWidth', 1);
+xlabel('RSSI [dBm]'); ylabel('Packet count per day'); grid on;
+legend('Valid', invalidstr);
+title(name4title,'Interpreter','none');
+set(findall(gcf,'-property','FontSize'),'FontSize',8)
+print(strcat(name, '_04'), '-dpng');
+
+%% Histogram of SNR
+figure();
+edges = -15.5:1:15.5; col = 7;
+c1 = round(histcounts(M(:,col), edges) ./ numdays);
+c2 = round(histcounts(N(:,col), edges) ./ numdays);
+bar(-15:1:15, [c1' c2'], 'Stacked', 'BarWidth', 1);
+xlabel('SNR [dBm]'); ylabel('Packet count per day'); grid on;
+legend('Valid', invalidstr);
+title(name4title,'Interpreter','none');
+set(findall(gcf,'-property','FontSize'),'FontSize',8)
+print(strcat(name, '_05'), '-dpng');
+
