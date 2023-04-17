@@ -1,14 +1,22 @@
-%function  process_valid(name)
+function  process_beacon(name, mode)
 
 
 % nr,time_epoch,len,srcgw,crc,rssi,snr,frequency,sf,cr,ftype,devaddr,fport,fcnt
 % 1,1659362668.811991000,27,1,1,-108.0,0.0,867100000,11,5,2,654426274,8,36916
 
-close all;
-clear all;
+%close all;
+%clear all;
+
+if strcmp(mode, 'unix')
+    invalidstr = 'UNIX time'; 
+    append = '_unix';
+elseif strcmp(mode, 'utcshift')
+    invalidstr = 'UTC shift'; 
+    append = '_utcshift';
+end
 
 %name = '05_Wien_beacon'; invalidstr = 'UTC shift'; append = '_utcshift';
-name = '07_Brno_beacon'; invalidstr = 'UNIX time'; append = '_unix';
+%name = '07_Brno_beacon'; invalidstr = 'UNIX time'; append = '_unix';
 
 M = readmatrix(strcat(name, '_valid.csv'), 'TreatAsMissing', 'NaN');
 N = readmatrix(strcat(name, append, '.csv'), 'TreatAsMissing', 'NaN');
