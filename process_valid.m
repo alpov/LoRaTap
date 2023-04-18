@@ -33,7 +33,7 @@ set(gca, 'xticklabel', {'SF7', 'SF8', 'SF9', 'SF10', 'SF11', 'SF12'});
 ylabel('Packet count per day'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
-title(name4title,'Interpreter','none');
+%title(name4title,'Interpreter','none');
 set(findall(gcf,'-property','FontSize'),'FontSize',8)
 print(strcat(name, '_01'), '-dpng');
 
@@ -50,7 +50,7 @@ set(gca, 'xticklabel', {'CR 4/5', 'CR 4/6', 'CR 4/7', 'CR 4/8'});
 ylabel('Packet count per day'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
-title(name4title,'Interpreter','none');
+%title(name4title,'Interpreter','none');
 set(findall(gcf,'-property','FontSize'),'FontSize',8)
 print(strcat(name, '_02'), '-dpng');
 
@@ -66,7 +66,7 @@ set(gca, 'xticklabel', {'867.1', '867.3', '867.5', '867.7', '867.9', '868.1', '8
 xlabel('Frequency [MHz]'); ylabel('Packet count per day'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
-title(name4title,'Interpreter','none');
+%title(name4title,'Interpreter','none');
 set(findall(gcf,'-property','FontSize'),'FontSize',8)
 print(strcat(name, '_03'), '-dpng');
 
@@ -79,7 +79,7 @@ c3 = round(histcounts(M(M(:,4)==3,col), edges) ./ numdays);
 bar(-130:2:-50,[c1' c2' c3'], 'Stacked', 'BarWidth', 1);
 xlabel('RSSI [dBm]'); ylabel('Packet count per day'); grid on;
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
-title(name4title,'Interpreter','none');
+%title(name4title,'Interpreter','none');
 set(findall(gcf,'-property','FontSize'),'FontSize',8)
 print(strcat(name, '_04'), '-dpng');
 
@@ -92,7 +92,7 @@ c3 = round(histcounts(M(M(:,4)==3,col), edges) ./ numdays);
 bar(-25:1:15, [c1' c2' c3'], 'Stacked', 'BarWidth', 1);
 xlabel('SNR [dBm]'); ylabel('Packet count per day'); grid on;
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
-title(name4title,'Interpreter','none');
+%title(name4title,'Interpreter','none');
 set(findall(gcf,'-property','FontSize'),'FontSize',8)
 print(strcat(name, '_05'), '-dpng');
 
@@ -109,7 +109,7 @@ set(gca, 'xticklabel', {'<12', '12-15', '16-19', '20-23', '24-27', '28-31', '31-
 xlabel('Data length [B]'); ylabel('Packet count per day'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
-title(name4title,'Interpreter','none');
+%title(name4title,'Interpreter','none');
 set(findall(gcf,'-property','FontSize'),'FontSize',8)
 print(strcat(name, '_06'), '-dpng');
 
@@ -128,7 +128,7 @@ xtickangle(45);
 ylabel('Packet count per day'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('Uplink', 'Downlink RX1', 'Downlink RX2');
-title(name4title,'Interpreter','none');
+%title(name4title,'Interpreter','none');
 set(findall(gcf,'-property','FontSize'),'FontSize',8)
 print(strcat(name, '_07'), '-dpng');
 

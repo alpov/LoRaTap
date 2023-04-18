@@ -1,4 +1,4 @@
-function  process_beacon(name, mode)
+function  process_beacon2(name, mode)
 
 
 % nr,time_epoch,len,srcgw,crc,rssi,snr,frequency,sf,cr,ftype,devaddr,fport,fcnt
@@ -6,9 +6,24 @@ function  process_beacon(name, mode)
 
 %close all;
 %clear all;
-%name='../loralog/csv/02_Liege_beacon';
+%name='../loralog/csv/05_Wien_beacon'; mode='utcshift';
+%name='../loralog/csv/07_Brno_beacon'; mode='unix';
+
+if strcmp(mode, 'unix')
+    invalidstr = 'UNIX time'; 
+    append = '_unix';
+    shift = 315964782;
+elseif strcmp(mode, 'utcshift')
+    invalidstr = 'UTC shift'; 
+    append = '_utcshift';
+    shift = -18;
+end
+
+%name = '05_Wien_beacon'; invalidstr = 'UTC shift'; append = '_utcshift';
+%name = '07_Brno_beacon'; invalidstr = 'UNIX time'; append = '_unix';
 
 M = readmatrix(strcat(name, '_valid.csv'), 'TreatAsMissing', 'NaN');
+N = readmatrix(strcat(name, append, '.csv'), 'TreatAsMissing', 'NaN');
 numdays = days(datetime(M(end,2), 'ConvertFrom', 'posixtime')-datetime(M(1,2), 'ConvertFrom', 'posixtime'));
 
 % Extract city and type from filename
@@ -24,8 +39,10 @@ name4title = sprintf('%s (%s)', city, type);
 figure();
 edges = -121:2:-59; col = 6;
 c1 = round(histcounts(M(:,col), edges) ./ numdays);
-bar(-120:2:-60, [c1'], 'Stacked', 'BarWidth', 1);
+c2 = round(histcounts(N(:,col), edges) ./ numdays);
+bar(-120:2:-60,[c1' c2'], 'Stacked', 'BarWidth', 1);
 xlabel('RSSI [dBm]'); ylabel('Packet count per day'); grid on;
+legend('Valid', invalidstr);
 %title(name4title,'Interpreter','none');
 set(findall(gcf,'-property','FontSize'),'FontSize',8)
 print(strcat(name, '_04'), '-dpng');
@@ -34,8 +51,10 @@ print(strcat(name, '_04'), '-dpng');
 figure();
 edges = -15.5:1:15.5; col = 7;
 c1 = round(histcounts(M(:,col), edges) ./ numdays);
-bar(-15:1:15, [c1'], 'Stacked', 'BarWidth', 1);
+c2 = round(histcounts(N(:,col), edges) ./ numdays);
+bar(-15:1:15, [c1' c2'], 'Stacked', 'BarWidth', 1);
 xlabel('SNR [dBm]'); ylabel('Packet count per day'); grid on;
+legend('Valid', invalidstr);
 %title(name4title,'Interpreter','none');
 set(findall(gcf,'-property','FontSize'),'FontSize',8)
 print(strcat(name, '_05'), '-dpng');
@@ -44,8 +63,13 @@ print(strcat(name, '_05'), '-dpng');
 figure();
 edges = 0:2:500; col = 16;
 c1 = round(histcounts(1e6*(M(:,col)-0.154076), edges) ./ numdays);
-bar(edges(2:end), c1, 'Stacked', 'BarWidth', 1);
+c2 = round(histcounts(1e6*(N(:,col)-0.154076+shift), edges) ./ numdays);
+bar(edges(2:end), [c1' c2'], 'Stacked', 'BarWidth', 1);
+%bar(edges(2:end), c1, 'Stacked', 'BarWidth', 1);
+%hold on;
+%bar(edges(2:end), c2, 'Stacked', 'BarWidth', 1);
 xlabel('Difference [us]'); ylabel('Packet count per day'); grid on;
+legend('Valid', invalidstr);
 %title(name4title,'Interpreter','none');
 set(findall(gcf,'-property','FontSize'),'FontSize',8)
 print(strcat(name, '_08'), '-dpng');
