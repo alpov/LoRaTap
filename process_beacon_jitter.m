@@ -30,6 +30,7 @@ M3 = readmatrix(strcat(path, name, '_valid.csv'), 'TreatAsMissing', 'NaN');
 numdays3 = days(datetime(M3(end,2), 'ConvertFrom', 'posixtime')-datetime(M3(1,2), 'ConvertFrom', 'posixtime'));
 
 name4title = 'Beacon jitter';
+font = 12;
 
 %% Timing jitter
 figure();
@@ -46,8 +47,9 @@ bar(edges(2:end), [c1' c3' c5' c2' c4'], 'Stacked', 'BarWidth', 1);
 xlabel('Difference [\mus]'); ylabel('Packet count per day'); grid on;
 legend('Wien valid', 'Brno valid', 'Liege valid', 'Wien UTC shift', 'Brno UNIX time');
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 fig = gcf;
-fig.Position(4)=250;
+fig.Position(3)=fig.Position(3)*2;
+fig.Position(4)=fig.Position(4)*1.3;
 print(strcat(path,'00_jitter_all'), '-dpng');
 

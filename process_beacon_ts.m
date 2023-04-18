@@ -19,6 +19,7 @@ type = type(2:end);
 % Replace underscores with spaces and format output string
 type = strrep(type, '_', ' ');
 name4title = sprintf('%s (%s)', city, type);
+font = 12;
 
 %% Histogram of time shifts
 figure();
@@ -36,8 +37,9 @@ c3=(1:length(c))-0.4;
 c3(c>70) = c3(c>70)+2.0;
 text(c3, c2, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',6)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 fig = gcf;
-fig.Position(4)=250;
+fig.Position(3)=fig.Position(3)*2;
+fig.Position(4)=fig.Position(4)*1.3;
 print(strcat(name, '_03'), '-dpng');
 

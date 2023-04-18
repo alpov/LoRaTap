@@ -34,6 +34,7 @@ type = type(2:end);
 % Replace underscores with spaces and format output string
 type = strrep(type, '_', ' ');
 name4title = sprintf('%s (%s)', city, type);
+font = 12;
 
 %% Histogram of RSSI
 figure();
@@ -44,7 +45,7 @@ bar(-120:2:-60,[c1' c2'], 'Stacked', 'BarWidth', 1);
 xlabel('RSSI [dBm]'); ylabel('Packet count per day'); grid on;
 legend('Valid', invalidstr);
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_04'), '-dpng');
 
 %% Histogram of SNR
@@ -56,7 +57,7 @@ bar(-15:1:15, [c1' c2'], 'Stacked', 'BarWidth', 1);
 xlabel('SNR [dBm]'); ylabel('Packet count per day'); grid on;
 legend('Valid', invalidstr);
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_05'), '-dpng');
 
 %% Timing jitter
@@ -71,6 +72,6 @@ bar(edges(2:end), [c1' c2'], 'Stacked', 'BarWidth', 1);
 xlabel('Difference [us]'); ylabel('Packet count per day'); grid on;
 legend('Valid', invalidstr);
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_08'), '-dpng');
 

@@ -31,4 +31,5 @@ close all; process_beacon2('../loralog/csv/07_Brno_beacon', 'unix');
 close all; process_beacon_ts('../loralog/csv/05_Wien_beacon_all');
 close all; process_beacon_jitter();
 
+close all;
 toc

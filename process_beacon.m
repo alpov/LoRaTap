@@ -19,6 +19,7 @@ type = type(2:end);
 % Replace underscores with spaces and format output string
 type = strrep(type, '_', ' ');
 name4title = sprintf('%s (%s)', city, type);
+font = 12;
 
 %% Histogram of RSSI
 figure();
@@ -27,7 +28,7 @@ c1 = round(histcounts(M(:,col), edges) ./ numdays);
 bar(-120:2:-60, [c1'], 'Stacked', 'BarWidth', 1);
 xlabel('RSSI [dBm]'); ylabel('Packet count per day'); grid on;
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_04'), '-dpng');
 
 %% Histogram of SNR
@@ -37,7 +38,7 @@ c1 = round(histcounts(M(:,col), edges) ./ numdays);
 bar(-15:1:15, [c1'], 'Stacked', 'BarWidth', 1);
 xlabel('SNR [dBm]'); ylabel('Packet count per day'); grid on;
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_05'), '-dpng');
 
 %% Timing jitter
@@ -47,6 +48,6 @@ c1 = round(histcounts(1e6*(M(:,col)-0.154076), edges) ./ numdays);
 bar(edges(2:end), c1, 'Stacked', 'BarWidth', 1);
 xlabel('Difference [us]'); ylabel('Packet count per day'); grid on;
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_08'), '-dpng');
 

@@ -18,6 +18,7 @@ type = type(2:end);
 % Replace underscores with spaces and format output string
 type = strrep(type, '_', ' ');
 name4title = sprintf('%s (%s)', city, type);
+font = 12;
 
 %% Histogram of spreading factor usage of all packets
 figure();
@@ -33,7 +34,7 @@ ylabel('Packet count per day'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('CRC OK', 'CRC Bad', 'No CRC');
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_01'), '-dpng');
 
 %% Histogram of coding ratio
@@ -50,7 +51,7 @@ ylabel('Packet count per day'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('CRC OK', 'CRC Bad', 'No CRC');
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_02'), '-dpng');
 
 %% Histogram of frequency channels usage of all packets
@@ -62,11 +63,12 @@ c3 = round(histcounts(M(M(:,5)==4,col), edges) ./ numdays);
 c = c1+c2+c3;
 bar([c1' c2' c3'], 'Stacked', 'BarWidth', 0.7);
 set(gca, 'xticklabel', {'867.1', '867.3', '867.5', '867.7', '867.9', '868.1', '868.3', '868.5', '869.525'});
+xtickangle(45);
 xlabel('Frequency [MHz]'); ylabel('Packet count per day'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('CRC OK', 'CRC Bad', 'No CRC');
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_03'), '-dpng');
 
 %% Histogram of RSSI
@@ -79,7 +81,7 @@ bar(-130:2:-50,[c1' c2' c3'], 'Stacked', 'BarWidth', 1);
 xlabel('RSSI [dBm]'); ylabel('Packet count per day'); grid on;
 legend('CRC OK', 'CRC Bad', 'No CRC');
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_04'), '-dpng');
 
 %% Histogram of SNR
@@ -92,7 +94,7 @@ bar(-25:1:15, [c1' c2' c3'], 'Stacked', 'BarWidth', 1);
 xlabel('SNR [dBm]'); ylabel('Packet count per day'); grid on;
 legend('CRC OK', 'CRC Bad', 'No CRC');
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_05'), '-dpng');
 
 %% Histogram of packet length
@@ -105,11 +107,12 @@ c = c1+c2+c3;
 bar([c1' c2' c3'], 'Stacked', 'BarWidth', 0.7);
 xticks(1:length(edges)-1);
 set(gca, 'xticklabel', {'<12', '12-15', '16-19', '20-23', '24-27', '28-31', '31-34', '35-39', '40-43', '44-47', '48-51', '52-55', '>55'});
+xtickangle(45);
 xlabel('Data length [B]'); ylabel('Packet count per day'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('CRC OK', 'CRC Bad', 'No CRC');
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_06'), '-dpng');
 
 %% Histogram of source gateways
@@ -127,6 +130,6 @@ ylabel('Packet count per day'); grid on;
 text(1:length(c), c, num2str(c'), 'vert', 'bottom', 'horiz', 'center');
 legend('CRC OK', 'CRC Bad', 'No CRC');
 %title(name4title,'Interpreter','none');
-set(findall(gcf,'-property','FontSize'),'FontSize',8)
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_07'), '-dpng');
 
