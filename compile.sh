@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
 gcc sniffer-to-pcap.c -lcjson -lm -Wall -o log-convert
 gcc sniffer-scan.c -lcjson -lm -Wall -o log-scan
 sleep 1

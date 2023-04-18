@@ -18,7 +18,7 @@ awk 'NR>=1179308 && NR <= 3657105 { print }' $WORKDIR/log.txt > $WORKDIR/log/05_
 awk 'NR>=4969648 && NR <= 6919392 { print }' $WORKDIR/log.txt > $WORKDIR/log/07_Brno.log
 
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
 
 ./log-convert v0 $WORKDIR/log/00_Test.log $WORKDIR/pcap/00_Test_v0.pcap
 ./log-convert v1 $WORKDIR/log/00_Test.log $WORKDIR/pcap/00_Test_v1.pcap

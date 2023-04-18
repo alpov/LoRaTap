@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WORKDIR=".."
+WORKDIR="../loralog"
 
 CSV_FORMAT="-T fields -E separator=,
     -e frame.number -e frame.time_epoch -e frame.len -e loratap.srcgw -e loratap.flags.crc

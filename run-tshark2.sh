@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WORKDIR=".."
+WORKDIR="../loralog"
 
 FLT_LORAWAN_VALID="(((loratap.flags.crc == 0x01) || ((loratap.flags.crc == 0x04) && ((lorawan.mhdr.ftype == 3) ||
     lorawan.mhdr.ftype == 5))) && !(lorawan.mhdr_error) && !(_ws.expert.group == \"Malformed\"))"

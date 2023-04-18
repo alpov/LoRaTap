@@ -44,10 +44,11 @@ for line in csv.reader(fi):
     b = b[::-1]
     b = b.hex()
     epoch1 = int(b, 16) + 315964800 - 18
-    epoch2 = math.ceil(float(line[1]))
+    epoch2 = float(line[1])
     epochdiff = epoch2 - epoch1
 
     line.append(epochdiff)
+    epochdiff = math.floor(epochdiff)
 
     if (
             (mode == 'all') or

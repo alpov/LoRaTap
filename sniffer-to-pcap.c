@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
             
             /* Write header */
             pcaprec_hdr_t pcap_packet_header = {0};
-            pcap_packet_header.ts_sec = timegm(&tm);
+            pcap_packet_header.ts_sec = timegm(&tm) + 1; // added 1 second because time is taken from NMEA, which is 1 second behing UBX
             pcap_packet_header.ts_usec = atoi(&time[20]);
             pcap_packet_header.incl_len = size + (enable_v1 ? LORATAP_V1_HEADER_LENGTH : LORATAP_V0_HEADER_LENGTH);
             pcap_packet_header.orig_len = size + (enable_v1 ? LORATAP_V1_HEADER_LENGTH : LORATAP_V0_HEADER_LENGTH);
