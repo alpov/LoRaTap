@@ -10,6 +10,11 @@ CSV_FORMAT="-T fields -E separator=,
 FLT_LORAWAN_VALID="(((loratap.flags.crc == 0x01) || ((loratap.flags.crc == 0x04) && ((lorawan.mhdr.ftype == 3) ||
     lorawan.mhdr.ftype == 5))) && !(lorawan.mhdr_error) && !(_ws.expert.group == \"Malformed\"))"
 
+FLT_LORAWAN_CROSSTALK="((loratap.flags.crc == 0x01) &&
+    ((loratap.flags.iq_inverted == 0) && ((lorawan.mhdr.ftype == 1) || (lorawan.mhdr.ftype == 3) || (lorawan.mhdr.ftype == 5)) ||
+    ((loratap.flags.iq_inverted == 1) && ((lorawan.mhdr.ftype == 0) || (lorawan.mhdr.ftype == 2) || (lorawan.mhdr.ftype == 4)))))"
+FLT_LORAWAN_VALID="(($FLT_LORAWAN_VALID) && !($FLT_LORAWAN_CROSSTALK))"
+
 FLT_LORAWAN_VALID_DATA="($FLT_LORAWAN_VALID) && (lorawan.mhdr.ftype == 2 || lorawan.mhdr.ftype == 3 || lorawan.mhdr.ftype == 4 || lorawan.mhdr.ftype == 5)"
 
 FLT_BEACON_ALL="lorawan.msgtype == \"Class-B Beacon\""
