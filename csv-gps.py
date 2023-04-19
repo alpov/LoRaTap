@@ -1,5 +1,21 @@
+#!/usr/bin/python3
+
 import csv, sys
 from datetime import datetime
+
+def cf_coords_lat_custom(value):
+    coord_int = value if value < 0x00800000 else value - 0x01000000
+    coord_double = coord_int * 90. / 0x00800000
+
+    return f"{abs(coord_double):.5f}{'N' if coord_double >= 0 else 'S'}"
+
+
+def cf_coords_lng_custom(value):
+    coord_int = value if value < 0x00800000 else value - 0x01000000
+    coord_double = coord_int * 90. / 0x00800000
+
+    return f"{abs(coord_double):.5f}{'E' if coord_double >= 0 else 'W'}"
+
 
 filename = sys.argv[1]  # replace with your CSV file
 output_file = sys.argv[2]
@@ -8,10 +24,10 @@ unique_gps = {}
 
 with open(filename, 'r') as csvfile:
     reader = csv.reader(csvfile)
-    next(reader)  # skip header row
+    #next(reader)  # skip header row
     for row in reader:
-        latitude = row[15].replace(',', '.')
-        longitude = row[16].replace(',', '.')
+        latitude = cf_coords_lat_custom(int(row[15]))
+        longitude = cf_coords_lng_custom(int(row[16]))
         gps_pair = (latitude, longitude)
         unique_gps[gps_pair] = unique_gps.get(gps_pair, 0) + 1
 
