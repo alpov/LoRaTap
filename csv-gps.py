@@ -4,17 +4,14 @@ from datetime import datetime
 filename = sys.argv[1]  # replace with your CSV file
 output_file = sys.argv[2]
 
-# Wireshark beacon GPS filter
-# ((lorawan.msgtype == "Class-B Beacon") && (lorawan.beacon.crc2.status == "Good")) && (lorawan.beacon.crc2 == 0x0000)
-
 unique_gps = {}
 
 with open(filename, 'r') as csvfile:
     reader = csv.reader(csvfile)
     next(reader)  # skip header row
     for row in reader:
-        latitude = row[13].replace(',', '.')
-        longitude = row[14].replace(',', '.')
+        latitude = row[15].replace(',', '.')
+        longitude = row[16].replace(',', '.')
         gps_pair = (latitude, longitude)
         unique_gps[gps_pair] = unique_gps.get(gps_pair, 0) + 1
 

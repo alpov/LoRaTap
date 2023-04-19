@@ -26,23 +26,23 @@ for f in $WORKDIR/pcap/*.pcap; do
   DATASET="$(basename "$f" .pcap)"
 
   tshark -r "$f" $CSV_FORMAT > data.csv
-  ./csv-postprocess.py data.csv $WORKDIR/csv/${DATASET}_all.csv
+  ./csv-packet.py data.csv $WORKDIR/csv/${DATASET}_all.csv
   printf "%s,TOTAL,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_all.csv`
 
   tshark -r "$f" $CSV_FORMAT -Y "$FLT_ALL_VALID" > data.csv
-  ./csv-postprocess.py data.csv $WORKDIR/csv/${DATASET}_valid.csv
+  ./csv-packet.py data.csv $WORKDIR/csv/${DATASET}_valid.csv
   printf "%s,VALID,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_valid.csv`
 
 #  tshark -r "$f" $CSV_FORMAT -Y "$FLT_LORAWAN_VALID" > data.csv
-#  ./csv-postprocess.py data.csv $WORKDIR/csv/${DATASET}_lorawan.csv
+#  ./csv-packet.py data.csv $WORKDIR/csv/${DATASET}_lorawan.csv
 #  printf "%s,LORAWAN,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_lorawan.csv`
 
 #  tshark -r "$f" $CSV_FORMAT -Y "$FLT_BEACON_VALID" > data.csv
-#  ./csv-postprocess.py data.csv $WORKDIR/csv/${DATASET}_beacon.csv
+#  ./csv-packet.py data.csv $WORKDIR/csv/${DATASET}_beacon.csv
 #  printf "%s,BEACON,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_beacon.csv`
 
   tshark -r "$f" $CSV_FORMAT -Y "$FLT_LORAWAN_VALID_DATA" > data.csv
-  ./csv-postprocess.py data.csv $WORKDIR/csv/${DATASET}_data.csv
+  ./csv-packet.py data.csv $WORKDIR/csv/${DATASET}_data.csv
   printf "%s,DATA,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_data.csv`
   ./csv-devaddr.py $WORKDIR/csv/${DATASET}_data.csv $WORKDIR/csv/${DATASET}_devaddr.csv
 done
