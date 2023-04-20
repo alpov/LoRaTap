@@ -12,7 +12,7 @@ def cf_coords_lat_custom(value):
 
 def cf_coords_lng_custom(value):
     coord_int = value if value < 0x00800000 else value - 0x01000000
-    coord_double = coord_int * 90. / 0x00800000
+    coord_double = coord_int * 180. / 0x00800000
 
     return f"{abs(coord_double):.5f}{'E' if coord_double >= 0 else 'W'}"
 
