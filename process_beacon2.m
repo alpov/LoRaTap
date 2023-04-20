@@ -39,8 +39,8 @@ font = 12;
 %% Histogram of RSSI
 figure();
 edges = -121:2:-59; col = 6;
-c1 = round(histcounts(M(:,col), edges) ./ numdays);
-c2 = round(histcounts(N(:,col), edges) ./ numdays);
+c1 = (histcounts(M(:,col), edges) ./ numdays);
+c2 = (histcounts(N(:,col), edges) ./ numdays);
 bar(-120:2:-60,[c1' c2'], 'Stacked', 'BarWidth', 1);
 xlabel('RSSI [dBm]'); ylabel('Packet count per day'); grid on;
 legend('Valid', invalidstr);
@@ -51,8 +51,8 @@ print(strcat(name, '_04'), '-dpng');
 %% Histogram of SNR
 figure();
 edges = -15.5:1:15.5; col = 7;
-c1 = round(histcounts(M(:,col), edges) ./ numdays);
-c2 = round(histcounts(N(:,col), edges) ./ numdays);
+c1 = (histcounts(M(:,col), edges) ./ numdays);
+c2 = (histcounts(N(:,col), edges) ./ numdays);
 bar(-15:1:15, [c1' c2'], 'Stacked', 'BarWidth', 1);
 xlabel('SNR [dBm]'); ylabel('Packet count per day'); grid on;
 legend('Valid', invalidstr);
@@ -63,8 +63,8 @@ print(strcat(name, '_05'), '-dpng');
 %% Timing jitter
 figure();
 edges = 0:2:500; col = 16;
-c1 = round(histcounts(1e6*(M(:,col)-0.154076), edges) ./ numdays);
-c2 = round(histcounts(1e6*(N(:,col)-0.154076+shift), edges) ./ numdays);
+c1 = (histcounts(1e6*(M(:,col)-0.154076), edges) ./ numdays);
+c2 = (histcounts(1e6*(N(:,col)-0.154076+shift), edges) ./ numdays);
 bar(edges(2:end), [c1' c2'], 'Stacked', 'BarWidth', 1);
 %bar(edges(2:end), c1, 'Stacked', 'BarWidth', 1);
 %hold on;

@@ -24,7 +24,7 @@ font = 12;
 %% Histogram of time shifts
 figure();
 edges = [-Inf -2.5:1:37.5 Inf]; col = 16;
-c = round(histcounts(M(:,col), edges));
+c = (histcounts(M(:,col), edges));
 bar(c, 'Stacked', 'BarWidth', 0.7);
 xticks(1:length(edges)-1);
 %set(gca, 'xticklabel', {'<-3', -3:1:40, '>40'});
