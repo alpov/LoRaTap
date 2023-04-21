@@ -1,12 +1,12 @@
-function  process_beacon2_jitter(path)
+%function  process_beacon2_jitter(path)
 
 
 % nr,time_epoch,len,srcgw,crc,rssi,snr,frequency,sf,cr,ftype,devaddr,fport,fcnt
 % 1,1659362668.811991000,27,1,1,-108.0,0.0,867100000,11,5,2,654426274,8,36916
 
-%close all;
-%clear all;
-%path='../loralog/csv/';
+close all;
+clear all;
+path='../loralog/csv/';
 
 deltashift = 152576e-6 + 1500e-6 + 67e-6;
 
@@ -78,8 +78,8 @@ b5=bar(ax, x1values, c5, 'BarWidth', 1, 'FaceAlpha',alpha);
 chleg = get(ax, 'colororder');
 %title(name4title,'Interpreter','none');
 %hold on;
-plot(ax, t_gw1*1e6, zeros(size(t_gw1)), 'k^', 'MarkerFaceColor', chleg(3,:));
-plot(ax, t_gw3*1e6, zeros(size(t_gw3)), 'k^', 'MarkerFaceColor', chleg(5,:));
+plot(ax, t_gw1*1e6, zeros(size(t_gw1)), 'k^', 'MarkerFaceColor', chleg(3,:), 'MarkerSize', 8, 'LineWidth', 1.3);
+plot(ax, t_gw3*1e6, zeros(size(t_gw3)), 'k^', 'MarkerFaceColor', chleg(5,:), 'MarkerSize', 8, 'LineWidth', 1.3);
 
 hleg=legend(ax, 'Vienna UTC shift', 'Brno UNIX time', 'Vienna valid', 'Brno valid', 'Liege valid', 'Vienna gateways', 'Liege gateways');
 hleg.Position(1) = 0.55;

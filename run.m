@@ -47,9 +47,8 @@ copyfile('../loralog/csv/04_Graz_all_07.png', '../loralog/matlab');
 
 copyfile('../loralog/csv/05_Wien_all_07.png', '../loralog/matlab');
 copyfile('../loralog/csv/05_Wien_valid_*.png', '../loralog/matlab');
-copyfile('../loralog/csv/05_Wien_beacon_*.png', '../loralog/matlab');
+copyfile('../loralog/csv/05_Wien_beacon_all_03.png', '../loralog/matlab');
 
 copyfile('../loralog/csv/07_Brno_all_07.png', '../loralog/matlab');
 copyfile('../loralog/csv/07_Brno_valid_07.png', '../loralog/matlab');
-copyfile('../loralog/csv/07_Brno_beacon_*.png', '../loralog/matlab');
 
