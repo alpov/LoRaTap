@@ -6,7 +6,7 @@ function  process_valid(name)
 
 %close all;
 %clear all;
-%name = '05_Wien_valid';
+%name = '../loralog/csv/03_Brno_join_valid';
 
 M = readmatrix(strcat(name, '.csv'), 'TreatAsMissing', 'NaN');
 numdays = days(datetime(M(end,2), 'ConvertFrom', 'posixtime')-datetime(M(1,2), 'ConvertFrom', 'posixtime'));
@@ -148,3 +148,57 @@ print(strcat(name, '_07'), '-dpng');
 % set(findall(gcf,'-property','FontSize'),'FontSize',font)
 % print(strcat(name, '_08'), '-dpng');
 
+%% Air Time
+airtime_up = zeros(1,9);
+airtime_down = zeros(1,9);
+col = 16;
+freq = 1e6.*[867.1 867.3 867.5 867.7 867.9 868.1 868.3 868.5 869.525];
+for i = 1:length(freq)
+    L = M(:,4)==1 & M(:,8)==freq(i);
+    airtime_up(i) = sum(M(L,col));
+
+    L1 = M(:,4)==2 & M(:,8)==freq(i);
+    L2 = M(:,4)==3 & M(:,8)==freq(i);
+    airtime_down(i) = sum(M(L1,col)) + sum(M(L2,col));
+end
+airtime_up = airtime_up*1e-3 ./ numdays ./ 86400 .* 100;
+airtime_down = airtime_down*1e-3 ./ numdays ./ 86400 .* 100;
+
+fprintf('\ndataset = %s, numdays = %.2f\n', name, numdays);
+fprintf('dir/dev     count    days    %% tot    %% ch1  %% ch2  %% ch3  %% ch4  %% ch5  %% ch6  %% ch7  %% ch8  %% rx2      %% g   %% g1\n');
+fprintf('uplink              %5.2f   %6.3f   %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f   %6.3f %6.3f\n', numdays, sum(airtime_up), airtime_up, sum(airtime_up(1:5)), sum(airtime_up(6:8)));
+fprintf('downlink            %5.2f   %6.3f   %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f   %6.3f %6.3f\n', numdays, sum(airtime_down), airtime_down, sum(airtime_down(1:5)), sum(airtime_down(6:8)));
+
+%% Air Time, per DevAddr
+L = M(:,4)==1;
+Mflt = M(L,:);
+
+% Count occurrences of each unique value in input_array
+[unique_vals, ~, val_counts] = unique(Mflt(:,12));
+counts = accumarray(val_counts, 1);
+
+airtime = zeros(length(unique_vals),15);
+
+for i=1:length(unique_vals)
+    L = Mflt(:,12)==unique_vals(i);
+    airtime_ch = zeros(1,9);
+    for j = 1:length(freq)
+        L2 = Mflt(:,8)==freq(j);
+        airtime_ch(j) = sum(Mflt(L & L2,col));
+    end
+    numdays_dev = days(datetime(max(Mflt(L,2)), 'ConvertFrom', 'posixtime') - datetime(min(Mflt(L,2)), 'ConvertFrom', 'posixtime'));
+    airtime(i,:) = [unique_vals(i) counts(i) numdays_dev sum(Mflt(L,col)) airtime_ch sum(airtime_ch(1:5)), sum(airtime_ch(6:8))];
+end
+
+airtime(:,4:end) = airtime(:,4:end)*1e-3 ./ airtime(:,3) ./ 86400 .* 100;
+
+airtime(airtime(:,3)<1/24,:) = []; % delete all devices transmitting within only 1 hour
+airtime(airtime(:,1)==0,:) = []; % delete zero devaddr
+airtime(airtime(:,14)<1 & airtime(:,15)<1,:) = []; % delete all devices transmitting <1% in both G and G1
+
+[~, I] = sort(airtime(:,4), 'descend');
+airtime = airtime(I,:);
+
+for i=1:size(airtime,1)
+    fprintf('%08X   %6d   %5.2f   %6.3f   %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f   %6.3f %6.3f\n', airtime(i,:));
+end

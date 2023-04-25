@@ -133,3 +133,24 @@ legend('CRC OK', 'CRC Bad', 'No CRC');
 set(findall(gcf,'-property','FontSize'),'FontSize',font)
 print(strcat(name, '_07'), '-dpng');
 
+%% Air Time
+airtime_up = zeros(1,9);
+airtime_down = zeros(1,9);
+col = 16;
+freq = 1e6.*[867.1 867.3 867.5 867.7 867.9 868.1 868.3 868.5 869.525];
+for i = 1:length(freq)
+    L = M(:,4)==1 & M(:,8)==freq(i);
+    airtime_up(i) = sum(M(L,col));
+
+    L1 = M(:,4)==2 & M(:,8)==freq(i);
+    L2 = M(:,4)==3 & M(:,8)==freq(i);
+    airtime_down(i) = sum(M(L1,col)) + sum(M(L2,col));
+end
+airtime_up = airtime_up*1e-3 ./ numdays ./ 86400 .* 100;
+airtime_down = airtime_down*1e-3 ./ numdays ./ 86400 .* 100;
+
+fprintf('\ndataset = %s, numdays = %.2f\n', name, numdays);
+fprintf('dir/dev     count    days    %% tot    %% ch1  %% ch2  %% ch3  %% ch4  %% ch5  %% ch6  %% ch7  %% ch8  %% rx2      %% g   %% g1\n');
+fprintf('uplink              %5.2f   %6.3f   %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f   %6.3f %6.3f\n', numdays, sum(airtime_up), airtime_up, sum(airtime_up(1:5)), sum(airtime_up(6:8)));
+fprintf('downlink            %5.2f   %6.3f   %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f   %6.3f %6.3f\n', numdays, sum(airtime_down), airtime_down, sum(airtime_down(1:5)), sum(airtime_down(6:8)));
+
