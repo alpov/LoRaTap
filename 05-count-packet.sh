@@ -14,6 +14,8 @@ FLT_LORAWAN_VALID_DATA="($FLT_LORAWAN_VALID) && (lorawan.mhdr.ftype == 2 || lora
 
 FLT_UP="($FLT_LORAWAN_VALID) && (lorawan.mhdr.ftype == 2 || lorawan.mhdr.ftype == 4)"
 FLT_DN="($FLT_LORAWAN_VALID) && (lorawan.mhdr.ftype == 3 || lorawan.mhdr.ftype == 5)"
+FLT_DN_CRC_OK="($FLT_DN) && (loratap.flags.crc == 0x01)"
+FLT_DN_NO_CRC="($FLT_DN) && (loratap.flags.crc == 0x04)"
 
 FLT_UP_ADR="(($FLT_UP)) && (lorawan.fhdr.fctrl.adr == 1)"
 FLT_DN_ADR="(($FLT_DN)) && (lorawan.fhdr.fctrl.adr == 1)"
@@ -38,6 +40,10 @@ for f in $WORKDIR/pcap/*.pcap; do
 
   printf "%s downlink packets = " $DATASET
   tshark -r "$f" -Y "($FLT_DN)" | wc -l
+  printf "    CRC OK = "
+  tshark -r "$f" -Y "($FLT_DN_CRC_OK)" | wc -l
+  printf "    No CRC = "
+  tshark -r "$f" -Y "($FLT_DN_NO_CRC)" | wc -l
 
   printf "%s uplink packets with ADR = " $DATASET
   tshark -r "$f" -Y "($FLT_UP_ADR)" | wc -l
