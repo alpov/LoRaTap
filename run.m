@@ -32,7 +32,9 @@ close all; process_beacon2('../loralog/csv/05_Wien_beacon', 'utcshift');
 close all; process_beacon2('../loralog/csv/07_Brno_beacon', 'unix');
 close all; process_beacon_ts('../loralog/csv/05_Wien_beacon_all');
 close all; process_beacon_jitter('../loralog/csv/');
+%%
 
+close all; process_occup('../loralog/csv/00_occupation');
 close all;
 toc
 
@@ -42,15 +44,19 @@ if exist('../loralog/matlab', 'dir')
 end
 mkdir ('../loralog/matlab');
 copyfile('../loralog/csv/00_jitter_all.png', '../loralog/matlab');
+copyfile('../loralog/csv/00_occupation_01.png', '../loralog/matlab');
+copyfile('../loralog/csv/00_occupation_02.png', '../loralog/matlab');
 
 copyfile('../loralog/csv/02_Liege_all_07.png', '../loralog/matlab');
 
 copyfile('../loralog/csv/04_Graz_all_07.png', '../loralog/matlab');
 
 copyfile('../loralog/csv/05_Wien_all_07.png', '../loralog/matlab');
+copyfile('../loralog/csv/05_Wien_all_08.png', '../loralog/matlab');
 copyfile('../loralog/csv/05_Wien_valid_*.png', '../loralog/matlab');
 copyfile('../loralog/csv/05_Wien_beacon_all_03.png', '../loralog/matlab');
 
 copyfile('../loralog/csv/07_Brno_all_07.png', '../loralog/matlab');
+copyfile('../loralog/csv/07_Brno_all_08.png', '../loralog/matlab');
 copyfile('../loralog/csv/07_Brno_valid_07.png', '../loralog/matlab');
 

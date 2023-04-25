@@ -169,6 +169,17 @@ fprintf('dir/dev     count    days    %% tot    %% ch1  %% ch2  %% ch3  %% ch4  
 fprintf('uplink              %5.2f   %6.3f   %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f   %6.3f %6.3f\n', numdays, sum(airtime_up), airtime_up, sum(airtime_up(1:5)), sum(airtime_up(6:8)));
 fprintf('downlink            %5.2f   %6.3f   %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f   %6.3f %6.3f\n', numdays, sum(airtime_down), airtime_down, sum(airtime_down(1:5)), sum(airtime_down(6:8)));
 
+%% Histogram of channel occupation
+figure();
+c1 = airtime_up;
+c2 = airtime_down;
+bar([c1' c2']);
+set(gca, 'xticklabel', {'Ch.1', 'Ch.2', 'Ch.3', 'Ch.4', 'Ch.5', 'Ch.6', 'Ch.7', 'Ch.8', 'RX2'});
+ylabel('Channel utilization [%]'); grid on;
+legend('Uplink', 'Downlink', 'Location', 'NorthWest');
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
+print(strcat(name, '_08'), '-dpng');
+
 %% Air Time, per DevAddr
 L = M(:,4)==1;
 Mflt = M(L,:);

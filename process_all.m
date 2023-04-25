@@ -5,7 +5,7 @@ function  process_all(name)
 
 %close all;
 %clear all;
-%name = '05_Wien_all';
+%name = '../loralog/csv/05_Wien_all';
 
 M = readmatrix(strcat(name, '.csv'), 'TreatAsMissing', 'NaN');
 numdays = days(datetime(M(end,2), 'ConvertFrom', 'posixtime')-datetime(M(1,2), 'ConvertFrom', 'posixtime'));
@@ -153,4 +153,15 @@ fprintf('\ndataset = %s, numdays = %.2f\n', name, numdays);
 fprintf('dir/dev     count    days    %% tot    %% ch1  %% ch2  %% ch3  %% ch4  %% ch5  %% ch6  %% ch7  %% ch8  %% rx2      %% g   %% g1\n');
 fprintf('uplink              %5.2f   %6.3f   %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f   %6.3f %6.3f\n', numdays, sum(airtime_up), airtime_up, sum(airtime_up(1:5)), sum(airtime_up(6:8)));
 fprintf('downlink            %5.2f   %6.3f   %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f   %6.3f %6.3f\n', numdays, sum(airtime_down), airtime_down, sum(airtime_down(1:5)), sum(airtime_down(6:8)));
+
+%% Histogram of channel occupation
+figure();
+c1 = airtime_up;
+c2 = airtime_down;
+bar([c1' c2']);
+set(gca, 'xticklabel', {'Ch.1', 'Ch.2', 'Ch.3', 'Ch.4', 'Ch.5', 'Ch.6', 'Ch.7', 'Ch.8', 'RX2'});
+ylabel('Channel utilization [%]'); grid on;
+legend('Uplink', 'Downlink', 'Location', 'NorthWest');
+set(findall(gcf,'-property','FontSize'),'FontSize',font)
+print(strcat(name, '_08'), '-dpng');
 
