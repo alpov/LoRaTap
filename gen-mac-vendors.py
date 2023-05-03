@@ -24,3 +24,8 @@ with open('MacVendors_allocation.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=';')
     for row in data:
         writer.writerow([row['Assignment'], row['Organization Name']])
+
+    writer.writerow(['000000', 'Reserved (all zeros)'])
+    writer.writerow(['FFFFFF', 'Reserved (all ones)'])
+    writer.writerow(['', 'Unassigned'])
+
