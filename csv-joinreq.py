@@ -10,7 +10,7 @@ ouis = []
 with open('MacVendors_allocation.csv', 'r') as csvfile:
     reader = csv.reader(csvfile, delimiter=';')
     for row in reader:
-        oui = int(row[0], 16)
+        oui = row[0]
         operator = row[1]
         ouis.append({'oui': oui, 'operator': operator, 'count': 0})
 
@@ -20,11 +20,11 @@ with open(filename, 'r') as csvfile:
 with open(filename, 'r') as csvfile:
     reader = csv.reader(csvfile)
     for row in tqdm(reader, total=lines, desc="Processing rows"):
-        s = row[16].replace(':', '')
-        s = int(s[:6], 16)
+        s = row[16].replace(':', '').upper()
         for oui in ouis:
-            if oui['oui'] == s:
+            if s.startswith(oui['oui']):
                 oui['count'] += 1
+                break
 
 sorted_counts = [row for row in ouis if row['count'] > 0]
 
