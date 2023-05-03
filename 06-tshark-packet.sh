@@ -7,6 +7,8 @@ CSV_FORMAT="-T fields -E separator=,
     -e loratap.rssi.current -e loratap.rssi.snr -e loratap.channel.frequency -e loratap.channel.sf -e loratap.channel.cr
     -e lorawan.mhdr.ftype -e lorawan.fhdr.devaddr -e lorawan.fport -e lorawan.fhdr.fcnt -e loratap.flags"
 
+CSV_FORMAT_JOIN="$CSV_FORMAT -e lorawan.join_request.joineui -e lorawan.join_request.deveui"
+
 FLT_LORAWAN_VALID="(((loratap.flags.crc == 0x01) || ((loratap.flags.crc == 0x04) && ((lorawan.mhdr.ftype == 3) ||
     lorawan.mhdr.ftype == 5))) && !(lorawan.mhdr_error) && !(_ws.expert.group == \"Malformed\"))"
 
@@ -16,6 +18,8 @@ FLT_LORAWAN_CROSSTALK="((loratap.flags.crc == 0x01) &&
 FLT_LORAWAN_VALID="(($FLT_LORAWAN_VALID) && !($FLT_LORAWAN_CROSSTALK))"
 
 FLT_LORAWAN_VALID_DATA="($FLT_LORAWAN_VALID) && (lorawan.mhdr.ftype == 2 || lorawan.mhdr.ftype == 3 || lorawan.mhdr.ftype == 4 || lorawan.mhdr.ftype == 5)"
+
+FLT_LORAWAN_VALID_JOIN="($FLT_LORAWAN_VALID) && (lorawan.mhdr.ftype == 0)"
 
 FLT_BEACON_ALL="lorawan.msgtype == \"Class-B Beacon\""
 
@@ -50,6 +54,11 @@ for f in $WORKDIR/pcap/*.pcap; do
   ./csv-packet.py data.csv $WORKDIR/csv/${DATASET}_data.csv
   printf "%s,DATA,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_data.csv`
   ./csv-devaddr.py $WORKDIR/csv/${DATASET}_data.csv $WORKDIR/csv/${DATASET}_devaddr.csv
+
+  tshark -r "$f" $CSV_FORMAT_JOIN -Y "$FLT_LORAWAN_VALID_JOIN" > data.csv
+  ./csv-packet.py data.csv $WORKDIR/csv/${DATASET}_join.csv
+  printf "%s,JOIN,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_join.csv`
+  ./csv-joinreq.py $WORKDIR/csv/${DATASET}_join.csv $WORKDIR/csv/${DATASET}_joinreq.csv
 done
 
 rm -f data.csv
