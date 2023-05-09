@@ -1,14 +1,3 @@
-
-%close all; process_valid('../loralog/csv/03_Brno_join_valid');
-%close all; process_valid('../loralog/csv/05_Wien_valid');
-
-%%
-%close all; process_all('../loralog/csv/05_Wien_all');
-
-%%
-
-%close all; process_beacon('../loralog/csv/05_Wien_beacon', 'utcshift');
-
 %%
 clc
 tic

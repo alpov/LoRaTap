@@ -46,19 +46,13 @@ for f in $WORKDIR/pcap/*.pcap; do
 #  ./csv-packet.py data.csv $WORKDIR/csv/${DATASET}_lorawan.csv
 #  printf "%s,LORAWAN,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_lorawan.csv`
 
-#  tshark -r "$f" $CSV_FORMAT -Y "$FLT_BEACON_VALID" > data.csv
-#  ./csv-packet.py data.csv $WORKDIR/csv/${DATASET}_beacon.csv
-#  printf "%s,BEACON,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_beacon.csv`
-
   tshark -r "$f" $CSV_FORMAT -Y "$FLT_LORAWAN_VALID_DATA" > data.csv
   ./csv-packet.py data.csv $WORKDIR/csv/${DATASET}_data.csv
   printf "%s,DATA,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_data.csv`
-  ./csv-devaddr.py $WORKDIR/csv/${DATASET}_data.csv $WORKDIR/csv/${DATASET}_devaddr.csv
 
   tshark -r "$f" $CSV_FORMAT_JOIN -Y "$FLT_LORAWAN_VALID_JOIN" > data.csv
   ./csv-packet.py data.csv $WORKDIR/csv/${DATASET}_join.csv
   printf "%s,JOIN,%d\n" $DATASET `wc -l < $WORKDIR/csv/${DATASET}_join.csv`
-  ./csv-joinreq.py $WORKDIR/csv/${DATASET}_join.csv $WORKDIR/csv/${DATASET}_joinreq.csv
 done
 
 rm -f data.csv
